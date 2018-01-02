@@ -22,6 +22,26 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 
+type PrefixExpression struct {
+	Token    token.Token // the prefix token, e.g. ! or -
+	Operator string
+	Right    Expression // any other expression is valid here
+}
+
+func (pe *PrefixExpression) expressionNode() {}
+func (pe *PrefixExpression) TokenLiteral() string {
+	return pe.Token.Literal
+}
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
+
 type ReturnStatement struct {
 	Token       token.Token // the token.RETURN token
 	ReturnValue Expression
@@ -86,6 +106,19 @@ func (id *Identifier) TokenLiteral() string {
 }
 func (id *Identifier) String() string {
 	return id.Value
+}
+
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64
+}
+
+func (il *IntegerLiteral) expressionNode() {}
+func (il *IntegerLiteral) TokenLiteral() string {
+	return il.Token.Literal
+}
+func (il *IntegerLiteral) String() string {
+	return il.Token.Literal
 }
 
 type Node interface {
